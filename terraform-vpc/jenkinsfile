@@ -5,9 +5,9 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/your-username/terraform-vpc.git',
+                git url: 'https://github.com/Bsindhujareddy/Softtech-Tf-infra-Temp.git',
                     branch: 'main',
-                    credentialsId: 'git-credentials-id'
+                    credentialsId: 'github-cred'
             }
         }
 
@@ -15,11 +15,11 @@ pipeline {
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'aws-credentials-id'
+                    credentialsId: 'aws-cred'
                 ]]) {
 
                     sh '''
-                        export AWS_DEFAULT_REGION=ap-south-1
+                        export AWS_DEFAULT_REGION=us-east-1
 
                         terraform init
                         terraform validate
