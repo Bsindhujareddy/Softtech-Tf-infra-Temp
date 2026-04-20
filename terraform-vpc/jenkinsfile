@@ -48,6 +48,7 @@ pipeline {
                     credentialsId: 'aws-cred'
                 ]]) {
                     sh 'cd terraform-vpc'
+                    sh 'terraform init -input=false'
                     sh 'terraform destroy -auto-approve'
                 }
             }
