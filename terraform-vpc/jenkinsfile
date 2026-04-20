@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/your-username/terraform-vpc.git',
+                    branch: 'main',
+                    credentialsId: 'git-credentials-id'
+            }
+        }
+
+        stage('Terraform Deploy') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials-id'
+                ]]) {
+
+                    sh '''
+                        export AWS_DEFAULT_REGION=ap-south-1
+
+                        terraform init
+                        terraform validate
+                        terraform plan -out=tfplan
+                        terraform apply -auto-approve tfplan
+                    '''
+                }
+            }
+        }
+    }
+}
