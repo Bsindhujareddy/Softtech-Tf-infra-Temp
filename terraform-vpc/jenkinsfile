@@ -47,6 +47,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-cred'
                 ]]) {
+                    sh 'cd terraform-vpc'
                     sh 'terraform destroy -auto-approve'
                 }
             }
