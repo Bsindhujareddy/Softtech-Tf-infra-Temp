@@ -27,7 +27,7 @@ pipeline {
                 ]]) {
 
                     sh '''
-                        cd backend
+                        cd terraform-dependency
 						export AWS_DEFAULT_REGION=us-east-1
 
                         terraform init
@@ -47,7 +47,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-cred'
                 ]]) {
-                    sh 'cd backend'
+                    sh 'cd terraform-dependency'
                     sh 'terraform init -input=false'
                     sh 'terraform destroy -auto-approve'
                 }
