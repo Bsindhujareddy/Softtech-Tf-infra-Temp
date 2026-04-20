@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+     parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Choose Terraform action'
+        )
+    }
+
     stages {
 
         stage('Checkout') {
@@ -27,6 +35,19 @@ pipeline {
                         terraform plan -out=tfplan
                         terraform apply -auto-approve tfplan
                     '''
+                }
+            }
+        }
+       stage('Terraform Destroy') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials-id'
+                ]]) {
+                    sh 'terraform destroy -auto-approve'
                 }
             }
         }
