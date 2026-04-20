@@ -17,9 +17,14 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-cred'
                 ]]) {
+<<<<<<< HEAD
  
                     sh '''
                         cd terraform-vpc
+=======
+
+                    sh '''
+>>>>>>> f2115f7b86a2dd384742d5779e70aed4c20bfb50
                         export AWS_DEFAULT_REGION=us-east-1
 
                         terraform init
