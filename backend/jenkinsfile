@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+     parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Choose Terraform action'
+        )
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Bsindhujareddy/Softtech-Tf-infra-Temp.git',
+                    branch: 'main',
+                    credentialsId: 'github-cred'
+            }
+        }
+
+        stage('Terraform Deploy') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-cred'
+                ]]) {
+
+                    sh '''
+                        cd backend
+						export AWS_DEFAULT_REGION=us-east-1
+
+                        terraform init
+                        terraform validate
+                        terraform plan -out=tfplan
+                        terraform apply -auto-approve tfplan
+                    '''
+                }
+            }
+        }
+       stage('Terraform Destroy') {
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-cred'
+                ]]) {
+                    sh 'cd backend'
+                    sh 'terraform init -input=false'
+                    sh 'terraform destroy -auto-approve'
+                }
+            }
+        }
+    }
+}
