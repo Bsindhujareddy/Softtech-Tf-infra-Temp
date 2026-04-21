@@ -30,7 +30,7 @@ pipeline {
                         cd terraform-vpc
 						export AWS_DEFAULT_REGION=us-east-1
 
-                        terraform init -migrate-state -input=false
+                        terraform init -migrate-state -force-copy
                         terraform validate
                         terraform plan -out=tfplan
                         terraform apply -auto-approve tfplan
